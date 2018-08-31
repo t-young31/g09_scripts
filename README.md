@@ -12,13 +12,15 @@ gaussian output file.
 
 ## Making the script an executable
 
-`mkdir $HOME/scripts`
+`mkdir $HOME/scripts`  
 `cd $HOME/scripts`
+`vi scan_to_ts`  
+Paste the python code into the file and save (`:wq` in vim)
 
 Get the full path to Python with `which python` (and make sure
   `python --version` is >3)
 
-Add the line `#! /path/to/python` to the top of the fist line of scan_to_ts.py
+Add the line `#! /path/to/python` to the top of the fist line of scan_to_ts
 
-`echo "PATH=$HOME/scripts:$PATH" >> ~/.bash_profile`
+`echo "PATH=$HOME/scripts:$PATH" >> ~/.bash_profile`  
 `source ~/.bash_profile`
