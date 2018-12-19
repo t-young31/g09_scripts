@@ -17,8 +17,9 @@ def print_output(output_filename, mol_obj):
     with open(output_filename, 'a') as output_file:
         print(mol_obj.filename, file=output_file)
         print('E = ', np.round(mol_obj.e, 6), file=output_file)
-        print('H = ', np.round(mol_obj.h, 6), file=output_file)
-        print('G = ', np.round(mol_obj.g, 6), '\n', file=output_file)
+        if mol_obj.freq:
+            print('H = ', np.round(mol_obj.h, 6), file=output_file)
+            print('G = ', np.round(mol_obj.g, 6), '\n', file=output_file)
         for xyz_line in mol_obj.xyzs:
             print('{:<5s}{:10.5f}{:10.5f}{:10.5f}'.format(*xyz_line),file=output_file)
         print('\n', file=output_file)
