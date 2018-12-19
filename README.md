@@ -1,26 +1,20 @@
 # Scripts for parsing Gaussian09 output
 
-scan_to_ts.py
+## scan_to_ts.py
 
 Script to parse a scan output file and generate a ts guess .xyz file
 
 Using the script:
 
-Run with `python scan_to_ts.py file.log`, where `file.log` is the
+Run with `python scan_to_ts.py file.log`, where `file.log` is a
 gaussian output file.
 
+## log2SI.py
 
-## Making the script an executable
+Script to parse .log files and extract E, H, G along with the coordinates
 
-`mkdir $HOME/scripts`  
-`cd $HOME/scripts`
-`vi scan_to_ts`  
-Paste the python code into the file and save (`:wq` in vim)
+Using the script:
 
-Get the full path to Python with `which python` (and make sure
-  `python --version` is >3)
-
-Add the line `#! /path/to/python` to the top of the fist line of scan_to_ts
-
-`echo "PATH=$HOME/scripts:$PATH" >> ~/.bash_profile`  
-`source ~/.bash_profile`
+Run with `python log2SI.py file.log`, where `file.log` is a
+gaussian output file. To run with multiple files `python log2SI.py *.log`
+which will generate an output.txt (name modified with the -o flag).
