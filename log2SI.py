@@ -35,14 +35,11 @@ class Molecule(object):
         self.calc_type = None
         self.freq = False
         self.opt_done = False
-        self.atom_labels = None
+        self.atom_labels = []
         self.xyzs = []
-        self.e = 0
-        self.h = 0
-        self.g = 0
+        self.e, self.h, self.g = 0, 0, 0
 
-        first_xyzs = False
-        opt_xyzs = False
+        first_xyzs, check_geom, opt_xyzs = False, False, False
         n_atom = 0
 
         with open(self.filename, 'r') as log_file:
@@ -56,12 +53,14 @@ class Molecule(object):
                     if 'freq' in line or 'Freq' in line:
                         self.freq = True
 
-                if 'Optimization completed.' in line:
-                    self.opt_done = True
-
-                if 'Charge' in line and 'Multiplicity' in line and self.atom_labels is None:
+                if 'Charge' in line and 'Multiplicity' in line and len(self.atom_labels) == 0:
                     first_xyzs = True
-                    self.atom_labels = []
+
+                if 'Redundant internal coordinates found in file' in line and len(self.atom_labels) == 0:
+                    check_geom = True
+
+                if len(line.split()) == 0 or len(line.split(',')) == 0:
+                    first_xyzs = False
 
                 if first_xyzs:
 
@@ -70,15 +69,18 @@ class Molecule(object):
 
                     if self.calc_type == 'sp' and len(line.split()) == 4:
                         xyz_line = line.split()
+                        self.atom_labels.append(xyz_line[0])
                         self.xyzs.append([xyz_line[0], float(xyz_line[1]), float(xyz_line[2]), float(xyz_line[3])])
 
-                if len(line.split()) == 0:
-                    first_xyzs = False
+                    if check_geom and len(line.split(',')) == 5:
+                        xyz_line = line.split(',')
+                        self.atom_labels.append(xyz_line[0])
+                        self.xyzs.append([xyz_line[0], float(xyz_line[2]), float(xyz_line[3]), float(xyz_line[4])])
 
                 if 'Stationary point found' in line:
                     self.opt_done = True
 
-                if 'Input orientation' in line and self.opt_done:
+                if 'Standard orientation' in line and self.opt_done:
                     opt_xyzs = True
 
                 if 'Distance matrix' in line:
