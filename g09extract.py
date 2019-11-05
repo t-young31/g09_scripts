@@ -12,6 +12,8 @@ def get_args():
 
 def print_ehg_lumo_homo(filename):
 
+    basename = filename.replace('.log', '')
+
     e, h, g = 0, 0, 0
 
     last_scf = None
@@ -34,16 +36,17 @@ def print_ehg_lumo_homo(filename):
         if 'Sum of electronic and thermal Free Energies' in line:
             g = line.split()[-1]
 
-        if 'Mulliken charges and spin densities:' in line:
-            mul_charges_section = True
-
         if 'Sum of Mulliken charges' in line and mul_charges_section:
             mul_charges_section = False
 
-        if mul_charges_section and len(line.split()) == 4:
+        if mul_charges_section and len(line.split()) >= 3:
             mul_charges.append(float(line.split()[2]))
 
+        if 'Mulliken charges and spin densities:' in line or 'Mulliken charges:' in line:
+            mul_charges_section = True
+
         if 'Natural Population' in line and 'Charge' in log_file_lines[n+2]:
+            nbo_charges = []
             nbo_charges_section = True
 
         if nbo_charges_section and ' * Total *' in line:
@@ -64,9 +67,9 @@ def print_ehg_lumo_homo(filename):
     e_homo = last_occ_eigenvalue
     e_lumo = first_virt_eigenvalue
 
-    if len(mul_charges) != len(nbo_charges) and len(nbo_charges) > 0:
-        print('Printing Mulliken and NBO charges to charges.csv...\n')
-        with open('charges.csv', 'w') as charges_file:
+    if len(mul_charges) == len(nbo_charges) and len(nbo_charges) > 0:
+        print('Printing Mulliken and NBO charges to filename_charges.csv...\n')
+        with open(basename + '_charges.csv', 'w') as charges_file:
             print('Mulliken', 'NBO', sep=',', file=charges_file)
             for n_charge in range(len(mul_charges)):
                 print(mul_charges[n_charge], nbo_charges[n_charge], sep=',', file=charges_file)
