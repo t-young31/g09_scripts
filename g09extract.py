@@ -45,8 +45,7 @@ def print_ehg_lumo_homo(filename):
         if 'Mulliken charges and spin densities:' in line or 'Mulliken charges:' in line:
             mul_charges_section = True
 
-        if 'Natural Population' in line and 'Charge' in log_file_lines[n+2]:
-            nbo_charges = []
+        if 'Natural Population' in line and 'Charge' in log_file_lines[n+2] and len(nbo_charges) == 0:
             nbo_charges_section = True
 
         if nbo_charges_section and ' * Total *' in line:
